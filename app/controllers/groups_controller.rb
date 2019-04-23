@@ -1,6 +1,6 @@
 class GroupsController < ApplicationController
-  before_action :authenticate_user! , only: [:new, :create, :edit, :update, :destroy]
   before_action :authenticate_user! , only: [:new, :create, :edit, :update, :destroy, :join, :quit]
+  before_action :find_group_and_check_permission, only: [:edit, :update, :destroy]
 
   def index
     @groups = Group.all
@@ -50,11 +50,11 @@ class GroupsController < ApplicationController
         flash[:notice] = "加入本讨论版成功！"
       else
         flash[:warning] = "你已经是本讨论版成员了！"
-      end
 
       redirect_to group_path(@group)
    end
-
+ end
+ 
    def quit
       @group = Group.find(params[:id])
 
@@ -63,9 +63,9 @@ class GroupsController < ApplicationController
         flash[:alert] = "已退出本讨论版！"
       else
         flash[:warning] = "你不是本讨论版成员，怎么退出 XD"
-      end
      redirect_to group_path(@group)
     end
+  end
 
    private
 
@@ -80,5 +80,4 @@ class GroupsController < ApplicationController
    def group_params
      params.require(:group).permit(:title, :description)
    end
-
  end
